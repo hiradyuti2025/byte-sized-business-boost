@@ -312,18 +312,12 @@
   /* ── MAP VIEW ── */
   #map-container {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: visible;
-    height: 560px; position: relative;
+    border-radius: var(--radius); overflow: hidden;
+    height: 520px; position: relative;
   }
-  #map { width: 100%; height: 100%; border-radius: var(--radius); overflow: hidden; }
-  /* Prevent Leaflet panes bleeding over modal */
-  .leaflet-pane,
-  .leaflet-top,
-  .leaflet-bottom,
-  .leaflet-control { z-index: 400 !important; }
-  .leaflet-map-pane { z-index: 200 !important; }
+  #map { width: 100%; height: 100%; }
   #map-legend {
-    position: absolute; bottom: 12px; left: 12px; z-index: 500;
+    position: absolute; bottom: 12px; left: 12px; z-index: 999;
     background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
     border: 1px solid var(--border); border-radius: 12px;
     padding: 12px 14px; max-width: 200px;
@@ -415,7 +409,7 @@
      MODAL OVERLAY
   ══════════════════════════════ */
   .modal-overlay {
-    position: fixed; inset: 0; z-index: 10000;
+    position: fixed; inset: 0; z-index: 200;
     background: rgba(26,23,20,0.5);
     backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center;
@@ -545,7 +539,7 @@
 
   /* ── TOAST ── */
   #toast {
-    position: fixed; bottom: 24px; right: 24px; z-index: 600;
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
     background: #1a1714; color: #fff;
     padding: 12px 18px; border-radius: 12px;
     font-size: 13px; font-weight: 600;
@@ -737,7 +731,7 @@
     <h1 class="login-title">Byte-Sized Business Boost</h1>
     <p class="login-sub">Discover & support your local community</p>
     <div class="login-pills">
-      <span class="login-pill">64 Businesses</span>
+      <span class="login-pill">16 Businesses</span>
       <span class="login-pill">Live Reviews</span>
       <span class="login-pill">Interactive Map</span>
       <span class="login-pill">Local Deals</span>
@@ -810,7 +804,7 @@
   <div id="stats-bar">
     <div class="stat-card">
       <div class="stat-icon" style="background:#fff3ed"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-      <div><div class="stat-val" id="stat-biz">64</div><div class="stat-label">Businesses</div></div>
+      <div><div class="stat-val" id="stat-biz">16</div><div class="stat-label">Businesses</div></div>
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="background:#fffbeb"><svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
@@ -887,7 +881,7 @@
         <div class="section-header">
           <div>
             <div class="section-title">Local Directory</div>
-            <div class="section-sub" id="list-count">64 businesses</div>
+            <div class="section-sub" id="list-count">16 businesses</div>
           </div>
         </div>
         <div id="biz-grid"></div>
@@ -1061,6 +1055,12 @@
     <button id="chat-close" onclick="toggleChat()">✕</button>
   </div>
 
+  <div id="chat-api-banner" style="padding:8px 12px;background:#eff6ff;border-bottom:1px solid #bfdbfe;font-size:11px;color:#1e40af;display:flex;align-items:center;gap:8px">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <input id="chat-api-key" type="password" placeholder="Paste your Anthropic API key to enable AI chat" 
+      style="flex:1;border:none;background:transparent;font-size:11px;color:#1e40af;outline:none;font-family:inherit"
+      oninput="saveApiKey(this.value)"/>
+  </div>
 <div id="chat-messages"></div>
 
   <div class="chat-suggestions" id="chat-suggestions">
@@ -1118,86 +1118,6 @@ const BUSINESSES = [
   { id:14, name:"Fresh Pick Market",      cat:'grocery',       desc:"Local farmers market and organic grocery with fresh produce daily.",                   deals:[],                                                                                    lat:40.5190, lng:-74.4050, addr:"110 Market Sq",      phone:"(732) 555-0112", hours:"Daily 7AM-9PM",    site:"freshpickmarket.com",  verified:true,  trending:false },
   { id:15, name:"The Velvet Lounge",      cat:'nightlife',     desc:"Jazz club and speakeasy with live music Fri-Sat and craft cocktails nightly.",         deals:["Half-price appetizers before 7 PM","Free cover on Wednesdays"],                  lat:40.5150, lng:-74.4110, addr:"88 Nightlife Alley", phone:"(732) 555-0116", hours:"Wed-Sun 5PM-2AM",  site:"velvetlounge.bar",     verified:true,  trending:true  },
   { id:16, name:"Apex Legal Partners",    cat:'professional',  desc:"Law firm specializing in small business needs, contracts, and IP protection.",         deals:["Free 30-minute initial consultation"],                                            lat:40.5210, lng:-74.4010, addr:"100 Corporate Plaza",phone:"(732) 555-0117", hours:"Mon-Fri 9AM-5PM",  site:"apexlegal.com",        verified:true,  trending:false },
-
-  // ── FOOD ──
-  { id:17, name:"Sunrise Dim Sum",          cat:'food',          desc:"Authentic Cantonese dim sum with handmade dumplings and traditional Hong Kong-style tea.",   deals:["Weekend brunch combo $12.99"],                                                    lat:40.5170, lng:-74.4065, addr:"22 Harbor Rd",        phone:"(732) 555-0201", hours:"Daily 8AM-3PM",    site:"sunrisedimsum.com",    verified:true,  trending:true  },
-  { id:18, name:"Piccolo Trattoria",         cat:'food',          desc:"Family-run Italian kitchen serving wood-fired pizza and homemade pasta from scratch.",       deals:["15% off Monday-Wednesday","Free tiramisu with $50+ orders"],                     lat:40.5220, lng:-74.4175, addr:"77 Vine St",           phone:"(732) 555-0202", hours:"Tue-Sun 11AM-10PM", site:"piccolotrattoria.com", verified:true,  trending:false },
-  { id:19, name:"Taco Roots",               cat:'food',          desc:"Street-style tacos and burritos made with locally sourced ingredients and house salsas.",    deals:["Taco Tuesday: 3 for $6"],                                                         lat:40.5140, lng:-74.4310, addr:"5 Elm Ave",            phone:"(732) 555-0203", hours:"Mon-Sun 10AM-9PM",  site:"tacoroots.co",         verified:false, trending:true  },
-
-  // ── RETAIL ──
-  { id:20, name:"Paper & Pine",             cat:'retail',        desc:"Indie bookshop and stationery store featuring local authors, zines, and art supplies.",     deals:["Buy 2 books get 1 free"],                                                         lat:40.5255, lng:-74.4055, addr:"12 Maple Ave",         phone:"(732) 555-0204", hours:"Mon-Sat 9AM-8PM",   site:"paperandpine.com",     verified:true,  trending:true  },
-  { id:21, name:"The Gift Collective",      cat:'retail',        desc:"Curated gifts, candles, artisan goods, and locally made products perfect for any occasion.", deals:["10% off all purchases over $30"],                                                 lat:40.5305, lng:-74.4035, addr:"300 Commerce Blvd",    phone:"(732) 555-0205", hours:"Tue-Sun 10AM-7PM",  site:"giftcollective.shop",  verified:false, trending:false },
-  { id:22, name:"Vinyl Kingdom",            cat:'retail',        desc:"Record shop with 10,000+ titles spanning jazz, soul, rock, and rare imports.",               deals:["$1 bin every Saturday"],                                                          lat:40.5275, lng:-74.4068, addr:"44 Record Row",        phone:"(732) 555-0206", hours:"Wed-Mon 11AM-7PM",  site:"vinylkingdom.com",     verified:true,  trending:true  },
-
-  // ── SERVICES ──
-  { id:23, name:"Bright Clean Co.",         cat:'services',      desc:"Residential and commercial cleaning services with same-week booking available.",            deals:["First home clean 25% off"],                                                       lat:40.5065, lng:-74.4195, addr:"89 Service Lane",      phone:"(732) 555-0207", hours:"Mon-Sat 7AM-6PM",   site:"brightclean.co",       verified:true,  trending:false },
-  { id:24, name:"Sharp Edge Barbers",       cat:'services',      desc:"Classic barbershop offering cuts, shaves, and beard styling. Walk-ins always welcome.",     deals:["Free hot towel shave with any haircut"],                                          lat:40.5102, lng:-74.4240, addr:"34 Barber Way",        phone:"(732) 555-0208", hours:"Tue-Sun 9AM-7PM",   site:"sharpedgebarbers.com", verified:true,  trending:true  },
-  { id:25, name:"Quick Print Studio",       cat:'services',      desc:"Full-service print shop for business cards, banners, flyers, and custom merchandise.",      deals:["500 business cards for $19","Same-day printing available"],                       lat:40.5075, lng:-74.4260, addr:"101 Print Plaza",      phone:"(732) 555-0209", hours:"Mon-Fri 8AM-7PM",   site:"quickprintstudio.com", verified:false, trending:false },
-
-  // ── HEALTH ──
-  { id:26, name:"Serenity Wellness Clinic", cat:'health',        desc:"Integrative health center offering acupuncture, massage therapy, and nutritional counseling.",deals:["Free 20-min consultation","10% off first 3 sessions"],                           lat:40.5030, lng:-74.4130, addr:"40 Healing Ave",       phone:"(732) 555-0210", hours:"Mon-Sat 9AM-7PM",   site:"serenitywellness.com", verified:true,  trending:true  },
-  { id:27, name:"SmileMore Dental",         cat:'health',        desc:"General and cosmetic dentistry practice with flexible scheduling and payment plans.",        deals:["Free new patient exam & X-rays"],                                                 lat:40.5065, lng:-74.4168, addr:"250 Dental Dr",        phone:"(732) 555-0211", hours:"Mon-Thu 8AM-5PM",   site:"smilemoredentalco.com",verified:true,  trending:false },
-  { id:28, name:"ClearView Optometry",      cat:'health',        desc:"Complete eye care: exams, glasses fittings, contact lens consultations, and more.",         deals:["$50 off designer frames with exam"],                                              lat:40.5042, lng:-74.4185, addr:"7 Vision Ct",          phone:"(732) 555-0212", hours:"Mon-Fri 9AM-6PM",   site:"clearviewoptometry.com",verified:false,trending:false },
-
-  // ── FITNESS ──
-  { id:29, name:"Zen Yoga Studio",          cat:'fitness',       desc:"Hot yoga, vinyasa, and restorative classes taught by certified instructors in a calm space.",deals:["First class free","Monthly unlimited $65"],                                       lat:40.5125, lng:-74.4322, addr:"18 Lotus Lane",        phone:"(732) 555-0213", hours:"Daily 6AM-9PM",     site:"zenyogastudio.com",    verified:true,  trending:true  },
-  { id:30, name:"CrossPeak Athletics",      cat:'fitness',       desc:"CrossFit and HIIT training facility with certified coaches and community competitions.",     deals:["Free foundations class","Refer a friend, both get 20% off"],                     lat:40.5098, lng:-74.4315, addr:"90 Peak Rd",           phone:"(732) 555-0214", hours:"Daily 5AM-10PM",    site:"crosspeakathletics.com",verified:true, trending:false },
-  { id:31, name:"Splash Aquatic Center",    cat:'fitness',       desc:"Indoor swimming pool with lap swim hours, swim lessons for all ages, and water aerobics.",   deals:["Free trial swim lesson for kids"],                                                lat:40.5115, lng:-74.4285, addr:"55 Aqua Blvd",         phone:"(732) 555-0215", hours:"Mon-Sun 6AM-9PM",   site:"splashaquatic.com",    verified:false, trending:false },
-
-  // ── BEAUTY ──
-  { id:32, name:"Chrome Nail Bar",          cat:'beauty',        desc:"Luxury nail salon specializing in gel, acrylic, chrome finishes, and nail art.",            deals:["20% off first visit","Buy 3 manicures get 1 free"],                               lat:40.5155, lng:-74.4085, addr:"61 Style St",          phone:"(732) 555-0216", hours:"Tue-Sun 10AM-8PM",  site:"chromenailbar.com",    verified:true,  trending:true  },
-  { id:33, name:"Luxe Hair Studio",         cat:'beauty',        desc:"Full-service hair salon for cuts, color, keratin treatments, and bridal styling.",           deals:["Free gloss treatment with color service"],                                        lat:40.5168, lng:-74.4118, addr:"130 Beauty Blvd",      phone:"(732) 555-0217", hours:"Mon-Sat 9AM-7PM",   site:"luxehairstudio.com",   verified:true,  trending:false },
-  { id:34, name:"The Brow Bar",             cat:'beauty',        desc:"Eyebrow threading, tinting, lamination, and lash lift specialist studio.",                  deals:["First threading $10 flat"],                                                       lat:40.5145, lng:-74.4095, addr:"22 Brow Lane",         phone:"(732) 555-0218", hours:"Tue-Sat 10AM-7PM",  site:"thebrowbar.co",        verified:false, trending:true  },
-
-  // ── AUTOMOTIVE ──
-  { id:35, name:"Speedy Lube Express",      cat:'automotive',    desc:"Fast oil changes, fluid checks, and basic maintenance. In and out in 15 minutes.",          deals:["$10 off synthetic oil change","Free air filter check"],                           lat:40.5340, lng:-74.4230, addr:"200 Auto Row",         phone:"(732) 555-0219", hours:"Mon-Sat 7AM-7PM",   site:"speedylubeexpress.com",verified:true,  trending:false },
-  { id:36, name:"Auto Glass Pro",           cat:'automotive',    desc:"Windshield repair, replacement, and window tinting. Mobile service available.",             deals:["Free chip repair with replacement","$30 off full tint package"],                  lat:40.5365, lng:-74.4270, addr:"312 Motor Pkwy",       phone:"(732) 555-0220", hours:"Mon-Fri 8AM-5PM",   site:"autoglasspro.com",     verified:false, trending:false },
-  { id:37, name:"Tires & Beyond",           cat:'automotive',    desc:"Full tire sales, mounting, balancing, alignment, and seasonal changeover services.",        deals:["Free balancing with 4-tire purchase","Road hazard warranty included"],           lat:40.5355, lng:-74.4215, addr:"450 Motor Pkwy",       phone:"(732) 555-0221", hours:"Mon-Sat 8AM-6PM",   site:"tiresbeyond.com",      verified:true,  trending:true  },
-
-  // ── EDUCATION ──
-  { id:38, name:"Little Minds Preschool",   cat:'education',     desc:"Play-based learning environment for ages 2-5. Small class sizes with certified educators.", deals:["Free trial week for new enrollments"],                                            lat:40.5230, lng:-74.4095, addr:"10 Learning Ln",       phone:"(732) 555-0222", hours:"Mon-Fri 7AM-6PM",   site:"littlemindsschool.com",verified:true,  trending:false },
-  { id:39, name:"Code Academy Jr.",         cat:'education',     desc:"After-school coding, robotics, and STEM workshops for kids ages 7-17.",                     deals:["First class free","Summer camp early-bird discount"],                             lat:40.5215, lng:-74.4060, addr:"88 STEM Drive",        phone:"(732) 555-0223", hours:"Mon-Fri 3PM-8PM",   site:"codeacademyjr.com",    verified:true,  trending:true  },
-  { id:40, name:"Language Hub",             cat:'education',     desc:"Spanish, Mandarin, French, and ESL classes for children and adults in small groups.",       deals:["10% off 6-week enrollment"],                                                      lat:40.5205, lng:-74.4040, addr:"55 Language Ave",      phone:"(732) 555-0224", hours:"Mon-Sat 9AM-8PM",   site:"languagehub.edu",      verified:false, trending:false },
-
-  // ── ENTERTAINMENT ──
-  { id:41, name:"Laser Zone Arena",         cat:'entertainment', desc:"Laser tag, arcade games, and VR experiences for families and team events.",                 deals:["Kids under 5 play free","Group packages from $99"],                               lat:40.5260, lng:-74.4105, addr:"8 Fun Blvd",           phone:"(732) 555-0225", hours:"Daily 10AM-10PM",   site:"laserzonearena.com",   verified:true,  trending:true  },
-  { id:42, name:"Escape the Room NJ",       cat:'entertainment', desc:"Immersive escape room experiences with 5 unique themed rooms for 2-10 players.",            deals:["$10 off weekday bookings","Student discount 15% off"],                            lat:40.5280, lng:-74.4135, addr:"99 Puzzle Way",        phone:"(732) 555-0226", hours:"Daily 12PM-11PM",   site:"escapetheroomnj.com",  verified:true,  trending:false },
-  { id:43, name:"Bowlero Lanes",            cat:'entertainment', desc:"Modern bowling alley with 24 lanes, sports bar, arcade, and private party rooms.",          deals:["Cosmic bowling Fri-Sat nights $8/game","Shoe rental included Mon-Thu"],           lat:40.5268, lng:-74.4115, addr:"200 Strike Ave",       phone:"(732) 555-0227", hours:"Mon-Sun 11AM-1AM",  site:"bowlerolanes.com",     verified:true,  trending:true  },
-
-  // ── PETS ──
-  { id:44, name:"Waggy Tails Grooming",     cat:'pets',          desc:"Dog and cat grooming studio with breed-specific styling and spa packages.",                  deals:["Free bandana with first groom","10% off for shelter adoptees"],                  lat:40.5080, lng:-74.4075, addr:"33 Paw Place",         phone:"(732) 555-0228", hours:"Tue-Sun 9AM-5PM",   site:"waggytailsgrooming.com",verified:true, trending:false },
-  { id:45, name:"Critter Corner Pet Shop",  cat:'pets',          desc:"Locally owned pet supply store with fish, small animals, bird supplies, and expert advice.", deals:["Loyalty card: 10th purchase free"],                                               lat:40.5070, lng:-74.4100, addr:"15 Pet Lane",          phone:"(732) 555-0229", hours:"Mon-Sat 9AM-7PM",   site:"crittercorner.com",    verified:false, trending:false },
-  { id:46, name:"Paws & Stay Boarding",     cat:'pets',          desc:"Overnight pet boarding, doggy daycare, and training sessions in a safe, caring environment.", deals:["First night boarding free","Daycare $25/day"],                                   lat:40.5095, lng:-74.4082, addr:"60 Kennel Rd",         phone:"(732) 555-0230", hours:"Daily 7AM-7PM",     site:"pawsandstay.com",      verified:true,  trending:true  },
-
-  // ── HOME ──
-  { id:47, name:"Green Thumb Nursery",      cat:'home',          desc:"Local plant nursery with seasonal flowers, herbs, trees, and expert landscaping advice.",   deals:["Free potting soil bag with plant purchase","Spring sale 30% off perennials"],   lat:40.5118, lng:-74.4265, addr:"80 Garden Way",        phone:"(732) 555-0231", hours:"Daily 8AM-6PM",     site:"greenthumnursery.com", verified:true,  trending:true  },
-  { id:48, name:"Reliable Plumbing Co.",    cat:'home',          desc:"Licensed plumbers for repairs, installations, and emergency callouts 7 days a week.",       deals:["$50 off first service call","Free drain inspection"],                             lat:40.5122, lng:-74.4290, addr:"44 Pipeline Rd",       phone:"(732) 555-0232", hours:"Daily 7AM-8PM",     site:"reliableplumbing.com", verified:true,  trending:false },
-  { id:49, name:"Smart Home Solutions",     cat:'home',          desc:"Smart device installation: lighting, security cameras, thermostats, and full home automation.",deals:["Free smart bulb starter kit with $200+ install"],                               lat:40.5135, lng:-74.4272, addr:"120 Smart Ave",        phone:"(732) 555-0233", hours:"Mon-Sat 9AM-6PM",   site:"smarthomesolutions.co",verified:false, trending:true  },
-
-  // ── TECH ──
-  { id:50, name:"ByteWorks Repair",         cat:'tech',          desc:"Laptop, tablet, and desktop repair. Data recovery, virus removal, and custom PC builds.",   deals:["Free diagnostic for first-time customers","10% student discount"],               lat:40.5235, lng:-74.4188, addr:"14 Circuit Rd",        phone:"(732) 555-0234", hours:"Mon-Sat 9AM-7PM",   site:"byteworksrepair.com",  verified:true,  trending:false },
-  { id:51, name:"The Camera Shop",          cat:'tech',          desc:"Photography gear, drone accessories, professional printing, and camera repair services.",   deals:["Free sensor clean with any repair","10% off accessories with camera purchase"], lat:40.5245, lng:-74.4210, addr:"72 Lens Ave",          phone:"(732) 555-0235", hours:"Tue-Sat 10AM-6PM",  site:"thecamerashop.com",    verified:true,  trending:true  },
-  { id:52, name:"Connect IT Solutions",     cat:'tech',          desc:"IT support for small businesses: networking, cloud setup, cybersecurity, and helpdesk.",    deals:["Free network audit ($150 value)","Remote support plans from $49/mo"],           lat:40.5250, lng:-74.4195, addr:"200 Tech Park",        phone:"(732) 555-0236", hours:"Mon-Fri 8AM-6PM",   site:"connectitsolutions.com",verified:true,trending:false },
-
-  // ── CLOTHING ──
-  { id:53, name:"Sole Society Sneakers",    cat:'clothing',      desc:"Sneaker boutique specializing in limited editions, classics, and custom sneaker cleaning.",  deals:["Free cleaning kit with any purchase","Raffle entries for limited drops"],        lat:40.5192, lng:-74.4138, addr:"55 Sneaker St",        phone:"(732) 555-0237", hours:"Mon-Sun 10AM-8PM",  site:"solesociety.com",      verified:true,  trending:true  },
-  { id:54, name:"Vintage Vault",            cat:'clothing',      desc:"Curated vintage and secondhand clothing from the 70s-90s. New stock every Thursday.",       deals:["Mystery bag: 5 items for $20","Student 15% off with ID"],                        lat:40.5205, lng:-74.4162, addr:"88 Retro Row",         phone:"(732) 555-0238", hours:"Wed-Mon 11AM-7PM",  site:"vintagevault.shop",    verified:false, trending:true  },
-  { id:55, name:"Active Threads",           cat:'clothing',      desc:"Athletic and activewear store with major brands and expert fit consultations.",              deals:["Running shoes trial program","15% off first purchase"],                           lat:40.5198, lng:-74.4145, addr:"12 Sport Blvd",        phone:"(732) 555-0239", hours:"Mon-Sat 9AM-8PM",   site:"activethreads.com",    verified:true,  trending:false },
-
-  // ── GROCERY ──
-  { id:56, name:"The Butcher Block",        cat:'grocery',       desc:"Artisan butcher shop with dry-aged beef, house-made sausages, and specialty meats.",        deals:["Weekend BBQ bundle deal","Buy 2 lbs get 0.5 lb free on ground beef"],           lat:40.5185, lng:-74.4035, addr:"28 Market Sq",         phone:"(732) 555-0240", hours:"Tue-Sun 8AM-7PM",   site:"thebutcherblock.com",  verified:true,  trending:false },
-  { id:57, name:"Harvest Health Foods",     cat:'grocery',       desc:"Natural grocery focusing on organic, gluten-free, and specialty diet products.",            deals:["10% off bulk bins every Tuesday","New item samples every weekend"],               lat:40.5195, lng:-74.4062, addr:"75 Organic Way",       phone:"(732) 555-0241", hours:"Daily 8AM-9PM",     site:"harvesthealthfoods.com",verified:true, trending:true  },
-  { id:58, name:"Lopez Family Bakery",      cat:'grocery',       desc:"Traditional Mexican bakery with pan dulce, tamales, fresh tortillas, and seasonal specials.", deals:["Half-price pan dulce after 5PM"],                                                 lat:40.5182, lng:-74.4048, addr:"3 Bakery Ln",           phone:"(732) 555-0242", hours:"Tue-Sun 6AM-7PM",   site:"lopezfamilybakery.com",verified:false, trending:false },
-
-  // ── NIGHTLIFE ──
-  { id:59, name:"Craft Republic Bar",       cat:'nightlife',     desc:"Local craft beer bar with 30 rotating taps, pub quizzes, and live music on weekends.",      deals:["Happy hour Mon-Fri 4-7PM","Free pint on your birthday"],                          lat:40.5145, lng:-74.4098, addr:"10 Tap Row",           phone:"(732) 555-0243", hours:"Mon-Sun 3PM-2AM",   site:"craftrepublicbar.com", verified:true,  trending:true  },
-  { id:60, name:"Rooftop Social",           cat:'nightlife',     desc:"Rooftop bar with panoramic views, cocktails, and DJs every Friday and Saturday night.",     deals:["Free entry before 9PM on Fridays","Bottomless brunch Sundays $35"],              lat:40.5158, lng:-74.4105, addr:"5 Skyline Ave",         phone:"(732) 555-0244", hours:"Wed-Sun 5PM-2AM",   site:"rooftopsocial.com",    verified:true,  trending:true  },
-  { id:61, name:"The Laugh Factory",        cat:'nightlife',     desc:"Comedy club featuring local and touring stand-up comedians every Thursday through Sunday.",  deals:["2-for-1 tickets Thursdays","$5 cover with college ID"],                           lat:40.5140, lng:-74.4118, addr:"44 Comedy Lane",       phone:"(732) 555-0245", hours:"Thu-Sun 7PM-1AM",   site:"thelaughfactory.com",  verified:false, trending:false },
-
-  // ── PROFESSIONAL ──
-  { id:62, name:"Horizon Accounting",       cat:'professional',  desc:"Certified public accountants specializing in small business taxes, bookkeeping, and audits.", deals:["Free 30-min tax planning session"],                                               lat:40.5218, lng:-74.4025, addr:"88 Finance Way",       phone:"(732) 555-0246", hours:"Mon-Fri 9AM-6PM",   site:"horizonaccounting.com",verified:true,  trending:false },
-  { id:63, name:"BrandFirst Marketing",     cat:'professional',  desc:"Digital marketing agency for local businesses: SEO, social media, ads, and branding.",      deals:["Free website audit","First month social media management 50% off"],              lat:40.5215, lng:-74.4018, addr:"150 Business Plaza",   phone:"(732) 555-0247", hours:"Mon-Fri 9AM-5PM",   site:"brandfirstmarketing.com",verified:true,trending:true  },
-  { id:64, name:"Main Street Insurance",    cat:'professional',  desc:"Independent insurance broker for home, auto, life, and small business liability policies.", deals:["Free policy review","Bundling discount up to 20%"],                               lat:40.5208, lng:-74.4005, addr:"200 Coverage Ct",      phone:"(732) 555-0248", hours:"Mon-Fri 8:30AM-5PM",site:"mainstreetins.com",    verified:true,  trending:false },
 ];
 
 let reviews = {
@@ -1210,25 +1130,6 @@ let reviews = {
   12: [{ rating:5, text:"Fixed my cracked screen in under an hour. Cheaper than the Apple Store!",      author:"Dev S.",   date:"Mar 2025", helpful:22 }],
   13: [{ rating:5, text:"Beautiful clothes and extremely helpful staff. Found my new go-to boutique.",  author:"Claire B.",date:"Feb 2025", helpful:8  }],
   15: [{ rating:5, text:"Best jazz in the area. The cocktails are creative and the vibe is unmatched.", author:"Marco F.", date:"Mar 2025", helpful:31 }],
-  17: [{ rating:5, text:"The soup dumplings are outstanding — better than anything in the city!", author:"Jenny L.", date:"Feb 2025", helpful:14 }],
-  18: [{ rating:5, text:"Carbonara that tastes like Rome. We come here every anniversary.", author:"Rob & Sue", date:"Mar 2025", helpful:19 }],
-  20: [{ rating:5, text:"My favorite bookshop in the state. The staff picks are always perfect.", author:"Priya S.", date:"Mar 2025", helpful:11 },
-       { rating:4, text:"Great selection of indie zines and art supplies. Very supportive of local artists.", author:"Cam T.", date:"Feb 2025", helpful:7 }],
-  24: [{ rating:5, text:"Best fade I've ever gotten. The hot towel treatment is pure luxury.", author:"Marcus J.", date:"Mar 2025", helpful:16 }],
-  29: [{ rating:5, text:"The hot yoga class completely changed my mornings. Incredible instructors.", author:"Nina R.", date:"Feb 2025", helpful:13 }],
-  32: [{ rating:5, text:"Chrome nails lasted 3 weeks without chipping. Absolutely worth it!", author:"Alexa B.", date:"Mar 2025", helpful:20 }],
-  37: [{ rating:4, text:"Great prices on tires and fast service. Free balancing sealed the deal.", author:"Pete M.", date:"Jan 2025", helpful:8 }],
-  39: [{ rating:5, text:"My 10-year-old built his first app after just 4 classes. Truly amazing program.", author:"David K.", date:"Feb 2025", helpful:25 }],
-  41: [{ rating:4, text:"Kids had an absolute blast. Laser tag arena is huge and well-organized.", author:"Family C.", date:"Mar 2025", helpful:17 }],
-  43: [{ rating:5, text:"Cosmic bowling on Friday night is the best thing in town. Great bar too.", author:"Steph W.", date:"Mar 2025", helpful:22 }],
-  46: [{ rating:5, text:"Our dog comes home happy and exhausted every time. Best boarding ever!", author:"Tom & Lisa", date:"Feb 2025", helpful:15 }],
-  47: [{ rating:4, text:"Huge selection of plants and the staff actually know their horticulture.", author:"Claire O.", date:"Mar 2025", helpful:9 }],
-  51: [{ rating:5, text:"They cleaned my sensor for free during a lens repair. Exceptional service.", author:"Jordan P.", date:"Jan 2025", helpful:18 }],
-  53: [{ rating:5, text:"Scored a pair of limited Jordans here. Staff are super knowledgeable about drops.", author:"Kyle B.", date:"Mar 2025", helpful:28 }],
-  57: [{ rating:4, text:"Love the bulk section — saves money and reduces waste. Great kombucha selection.", author:"Dana F.", date:"Feb 2025", helpful:10 }],
-  59: [{ rating:5, text:"30 taps of local craft beers and the pub quiz is legitimately fun.", author:"Brendan M.", date:"Mar 2025", helpful:21 }],
-  60: [{ rating:5, text:"The rooftop view at sunset is stunning. Cocktails are creative and strong!", author:"Sophia A.", date:"Mar 2025", helpful:33 }],
-  63: [{ rating:5, text:"Our Google ranking jumped to page 1 in 6 weeks. These guys are the real deal.", author:"Owner, Fresh Pick", date:"Feb 2025", helpful:27 }],
 };
 
 let favorites = new Set([1, 9, 13, 15]);
@@ -1286,7 +1187,6 @@ function showToast(msg) {
 function updateStats() {
   const totalRev = Object.values(reviews).flat().length;
   const totalDeals = BUSINESSES.filter(b=>b.deals.length>0).length;
-  document.getElementById('stat-biz').textContent = BUSINESSES.length;
   document.getElementById('stat-rev').textContent = totalRev;
   document.getElementById('stat-deals').textContent = totalDeals;
   document.getElementById('stat-fav').textContent = favorites.size;
@@ -1517,8 +1417,6 @@ function updateMapMarkers() {
           </div>
           <!-- Badges -->
           ${badgesHTML ? `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">${badgesHTML}</div>` : ''}
-          <!-- Description -->
-          <div style="font-size:11px;color:#4b5563;margin-bottom:8px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${b.desc}</div>
           <!-- Info rows -->
           <div style="font-size:11px;color:#6b6560;margin-bottom:4px;display:flex;gap:6px;align-items:flex-start">
             <span style="display:flex;align-items:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6b6560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span><span>${b.addr}</span>
@@ -1894,7 +1792,7 @@ function buildSystemPrompt() {
 
   return `You are a friendly, knowledgeable local business assistant for Byte-Sized Business Boost, a community business directory app.
 
-You have detailed knowledge of all 64 local businesses listed below. Help users find the right business, answer questions about hours, deals, ratings, and reviews. You can make personalized recommendations. Keep responses concise and conversational — 1-3 short paragraphs max. Use bullet points only when listing multiple items. Don't repeat the full business name every sentence.
+You have detailed knowledge of all 16 local businesses listed below. Help users find the right business, answer questions about hours, deals, ratings, and reviews. You can make personalized recommendations. Keep responses concise and conversational — 1-3 short paragraphs max. Use bullet points only when listing multiple items. Don't repeat the full business name every sentence.
 
 BUSINESSES IN OUR DIRECTORY:
 ${bizData}
@@ -1922,7 +1820,7 @@ function toggleChat() {
     notif.style.display = 'none';
     // Send welcome if first open
     if (chatHistory.length === 0) {
-      setTimeout(()=>addBotMessage("Hi! I'm your local business AI.\n\nI know all 64 businesses in our directory — their hours, deals, ratings, and reviews. What can I help you find today?"), 300);
+      setTimeout(()=>addBotMessage("Hi! I'm your local business AI.\n\nI know all 16 businesses in our directory — their hours, deals, ratings, and reviews. What can I help you find today?"), 300);
     }
     setTimeout(()=>document.getElementById('chat-input').focus(), 350);
   } else {
@@ -1975,12 +1873,6 @@ function showTyping() {
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-function hideTyping() {
-  const t = document.getElementById('chat-typing');
-  if (t) t.remove();
-}
-
-
 function sendSuggestion(btn) {
   const text = btn.textContent;
   document.getElementById('chat-suggestions').style.display = 'none';
@@ -1996,8 +1888,18 @@ function sendChat() {
   sendChatMessage(text);
 }
 
+let userApiKey = '';
+function saveApiKey(val) { userApiKey = val.trim(); }
+
 async function sendChatMessage(text) {
   if (chatBotTyping) return;
+
+  const key = userApiKey || (document.getElementById('chat-api-key')?.value || '').trim();
+  if (!key) {
+    document.getElementById('chat-api-key')?.focus();
+    addBotMessage("Please paste your Anthropic API key in the field above to enable AI chat. Get one free at console.anthropic.com");
+    return;
+  }
 
   chatBotTyping = true;
   document.getElementById('chat-send').disabled = true;
@@ -2006,9 +1908,14 @@ async function sendChatMessage(text) {
   showTyping();
 
   try {
-    const response = await fetch('/.netlify/functions/chat', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': key,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
