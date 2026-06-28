@@ -1407,7 +1407,7 @@ let map = null, markerLayer = null;
 
 // ═══════════════════════════════════════════════
 //  HELPERS
-// ═══════════════════════════════════════════════
+
 function avgRating(id) {
   const r = reviews[id] || [];
   return r.length ? r.reduce((s,x)=>s+x.rating,0)/r.length : 0;
