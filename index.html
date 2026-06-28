@@ -996,25 +996,8 @@
     </div>
   </header>
 
-  <!-- STATS BAR -->
-  <div id="stats-bar">
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#fff3ed"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-      <div><div class="stat-val" id="stat-biz">70</div><div class="stat-label">Businesses</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#fffbeb"><svg width="20" height="20" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-      <div><div class="stat-val" id="stat-rev">0</div><div class="stat-label">Reviews</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#fef2f2"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></div>
-      <div><div class="stat-val" id="stat-deals">0</div><div class="stat-label">Active Deals</div></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon" style="background:#fdf4ff"><svg width="20" height="20" viewBox="0 0 24 24" fill="#ec4899" stroke="#ec4899" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
-      <div><div class="stat-val" id="stat-fav">4</div><div class="stat-label">Saved</div></div>
-    </div>
-  </div>
+
+ 
 
   <!-- MAIN -->
   <div id="main">
@@ -1046,19 +1029,7 @@
     <!-- CONTENT -->
     <div id="content">
 
-      <!-- TOOLBAR (list/fav tabs only) -->
-      <div id="toolbar" class="hidden">
-        <div id="search-box" class="input-icon">
-          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-          <input type="text" id="toolbar-search" placeholder="Search businesses..." oninput="renderList()" style="font-size:13px"/>
-        </div>
-        <select id="toolbar-sort" onchange="renderList()" style="width:auto;font-size:13px">
-          <option value="rating">Highest Rated</option>
-          <option value="reviews">Most Reviews</option>
-          <option value="name">A – Z</option>
-          <option value="deals">Has Deals First</option>
-        </select>
-      </div>
+    
 
       <!-- MAP PANEL -->
       <div id="panel-map">
@@ -2541,15 +2512,9 @@ function closeAccessModal() {
           <div class="howto-desc">Click any business card or map pin to open its full detail page — see info, active deals, and community reviews. You can also leave your own star rating and review!</div>
         </div>
       </div>
+      
       <div class="howto-step">
         <div class="howto-num">5</div>
-        <div>
-          <div class="howto-title">Support Local &amp; Minority-Owned</div>
-          <div class="howto-desc">Filter by <strong>Black-Owned</strong> or <strong>Minority-Owned</strong> categories in the sidebar to specifically support these businesses in your community.</div>
-        </div>
-      </div>
-      <div class="howto-step">
-        <div class="howto-num">6</div>
         <div>
           <div class="howto-title">Chat with the AI Assistant</div>
           <div class="howto-desc">Click the <strong>chat bubble</strong> in the bottom-right corner to ask the AI anything — "best pizza near me", "open late tonight", "Black-owned restaurants" — and get instant answers.</div>
